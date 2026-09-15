@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="it" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoRide - Prenotazione & Sblocco IoT (FEAT-001)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10b981',
+                        primaryDark: '#059669',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen transition-colors duration-200 flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-500 text-white p-2 rounded-lg font-bold">
+                        <i class="fa-solid fa-bolt text-xl"></i>
+                    </div>
+                    <span class="font-bold text-xl tracking-wide bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
+                        EcoRide Mobility
+                    </span>
+                    <span class="text-xs px-2 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 rounded-full font-semibold">FEAT-001 Demo</span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Theme Switcher -->
+                    <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                        <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
+                    </button>
+                    <!-- User Profile -->
+                    <div class="flex items-center space-x-2 text-sm font-medium border-l border-gray-200 dark:border-gray-700 pl-4">
+                        <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">
+                            MR
+                        </div>
+                        <span class="hidden sm:inline">Mario Rossi</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Left Column: Vehicle Selection & Map Simulator -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Simulated Map Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 relative overflow-hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold flex items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot text-emerald-500"></i> Mappa Veicoli nelle Vicinanze
+                    </h2>
+                    <span class="text-xs bg-gray-100 dark:bg-gray-700 px-2.5 py-1 rounded-full font-mono text-gray-500">GPS: Attivo</span>
+                </div>
+
+                <!-- Canvas Map Simulator -->
+                <div class="h-72 bg-emerald-50/50 dark:bg-gray-950/50 rounded-xl relative border border-dashed border-emerald-200 dark:border-gray-700 flex items-center justify-center overflow-hidden">
+                    <div class="absolute inset-0 opacity-20 dark:opacity-10 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                    
+                    <!-- Simulated User Location Marker -->
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-10">
+                        <span class="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-lg animate-ping absolute"></span>
+                        <span class="w-4 h-4 bg-blue-600 rounded-full border-2 border-white shadow-lg relative"></span>
+                        <span class="text-[10px] font-bold bg-blue-600 text-white px-1.5 py-0.5 rounded shadow mt-1">Tu sei qui</span>
+                    </div>
+
+                    <!-- Simulated Vehicle Pins -->
+                    <button onclick="selectVehicle('CAR-102', 'Fiat 500e', 'Auto Elettrica', 85, 0.29, 20)" class="absolute top-1/3 left-1/3 p-2 bg-emerald-500 text-white rounded-full shadow-lg hover:scale-110 transition cursor-pointer flex items-center justify-center w-10 h-10 border-2 border-white">
+                        <i class="fa-solid fa-car text-sm"></i>
+                    </button>
+
+                    <button onclick="selectVehicle('BIKE-405', 'E-Bike City 3000', 'Bicicletta Elettrica', 92, 0.15, 45)" class="absolute bottom-1/4 right-1/3 p-2 bg-emerald-500 text-white rounded-full shadow-lg hover:scale-110 transition cursor-pointer flex items-center justify-center w-10 h-10 border-2 border-white">
+                        <i class="fa-solid fa-bicycle text-sm"></i>
+                    </button>
+
+                    <button onclick="selectVehicle('CAR-204', 'Tesla Model 3', 'Auto Elettrica', 12, 0.45, 150)" class="absolute top-1/4 right-1/4 p-2 bg-amber-500 text-white rounded-full shadow-lg hover:scale-110 transition cursor-pointer flex items-center justify-center w-10 h-10 border-2 border-white">
+                        <i class="fa-solid fa-car text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- Proximity Distance Simulator Slider (US-010 Rule 4) -->
+                <div class="mt-4 bg-gray-50 dark:bg-gray-750 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                            Simulatore Prossimità Utente (US-010):
+                        </label>
+                        <span id="distanceDisplay" class="font-bold text-sm text-emerald-600 dark:text-emerald-400">20 metri</span>
+                    </div>
+                    <input type="range" id="distanceSlider" min="5" max="200" value="20" class="w-full accent-emerald-500 cursor-pointer" oninput="updateDistance(this.value)">
+                    <p class="text-[11px] text-gray-500 mt-1">Regola: Lo sblocco è consentito solo se la distanza dal veicolo è ≤ 50 metri.</p>
+                </div>
+            </div>
+
+            <!-- Vehicle Fleet Selection List -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+                <h3 class="text-md font-semibold mb-4 text-gray-700 dark:text-gray-200">Veicoli Disponibili nelle Vicinanze</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="vehicleCards">
+                    <!-- Card 1 -->
+                    <div onclick="selectVehicle('CAR-102', 'Fiat 500e', 'Auto Elettrica', 85, 0.29, 20)" class="vehicle-card p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50/30 dark:bg-emerald-950/20 cursor-pointer hover:border-emerald-600 transition">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="font-bold text-lg">Fiat 500e</span>
+                                <span class="text-xs block text-gray-500 font-mono">CAR-102</span>
+                            </div>
+                            <span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded">Disponibile</span>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center text-xs text-gray-600 dark:text-gray-300">
+                            <span><i class="fa-solid fa-battery-three-quarters text-emerald-500"></i> 85%</span>
+                            <span><i class="fa-solid fa-tag"></i> 0,29 €/min</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div onclick="selectVehicle('BIKE-405', 'E-Bike City 3000', 'Bicicletta Elettrica', 92, 0.15, 45)" class="vehicle-card p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-emerald-500 cursor-pointer transition">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="font-bold text-lg">E-Bike City</span>
+                                <span class="text-xs block text-gray-500 font-mono">BIKE-405</span>
+                            </div>
+                            <span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded">Disponibile</span>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center text-xs text-gray-600 dark:text-gray-300">
+                            <span><i class="fa-solid fa-battery-full text-emerald-500"></i> 92%</span>
+                            <span><i class="fa-solid fa-tag"></i> 0,15 €/min</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: IoT Unlock Control Panel (FEAT-001 Execution) -->
+        <div class="space-y-6">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-4 mb-4">
+                        <h2 class="text-lg font-bold">Pannello Noleggio</h2>
+                        <span id="vehicleStatusBadge" class="px-2.5 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">
+                            PRONTO PER SBLOCCO
+                        </span>
+                    </div>
+
+                    <!-- Selected Vehicle Details -->
+                    <div id="selectedVehicleInfo" class="space-y-3 mb-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">Veicolo Selezionato:</span>
+                            <span id="vName" class="font-bold text-base">Fiat 500e</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-500">Codice Identificativo:</span>
+                            <span id="vID" class="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">CAR-102</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-500">Tariffa Minutaria:</span>
+                            <span id="vRate" class="font-semibold text-emerald-600">0.29 € / min</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-500">Pre-autorizzazione richiesta:</span>
+                            <span class="font-semibold text-gray-700 dark:text-gray-300">5.00 € (congelati)</span>
+                        </div>
+                    </div>
+
+                    <!-- Console/Log Screen IoT -->
+                    <div class="bg-gray-900 text-emerald-400 p-3 rounded-xl font-mono text-[11px] h-28 overflow-y-auto mb-6 space-y-1 shadow-inner" id="iotConsole">
+                        <div>[SYSTEM] In attesa di avvio noleggio...</div>
+                        <div>[GPS] Posizione utente confermata.</div>
+                    </div>
+                </div>
+
+                <!-- Simulation Controls & Action Button -->
+                <div class="space-y-3">
+                    <!-- Action Button US-010 -->
+                    <button id="unlockBtn" onclick="startUnlockProcess()" class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg hover:shadow-emerald-500/20 transition flex items-center justify-center gap-2 text-base">
+                        <i class="fa-solid fa-lock-open"></i> SBLOCCA VEICOLO (US-010)
+                    </button>
+
+                    <!-- Simulation Mode Toggle for US-011 -->
+                    <div class="flex items-center justify-between text-xs pt-2 border-t border-gray-100 dark:border-gray-700">
+                        <span class="text-gray-500">Simula Errore IoT (US-011):</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="simHardwareError" class="sr-only peer">
+                            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Trip Widget (Hidden initially) -->
+            <div id="activeTripWidget" class="hidden bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs font-bold uppercase tracking-widest opacity-80">Noleggio Attivo</span>
+                    <span class="animate-pulse w-3 h-3 bg-white rounded-full"></span>
+                </div>
+                
+                <div class="text-center py-4">
+                    <div class="text-4xl font-extrabold font-mono tracking-tight" id="tripTimer">00:00</div>
+                    <span class="text-xs opacity-75 mt-1 block">Tempo Trascorso</span>
+                </div>
+
+                <div class="flex justify-between items-center mt-4 pt-4 border-t border-white/20 text-xs">
+                    <div>
+                        <span class="block opacity-75">Costo Accumulato:</span>
+                        <span class="font-bold text-sm" id="accumulatedCost">0,00 €</span>
+                    </div>
+                    <button onclick="endTrip()" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 backdrop-blur rounded-lg text-xs font-bold transition">
+                        Termina Corsa (FEAT-002)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500 dark:text-gray-400">
+            Prototipo Web Car Sharing & Bike Sharing • FEAT-001 (US-010 & US-011) • Commit Ready
+        </div>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // State Management
+        let currentVehicle = { id: 'CAR-102', name: 'Fiat 500e', type: 'Auto Elettrica', battery: 85, rate: 0.29, distance: 20 };
+        let tripInterval = null;
+        let secondsElapsed = 0;
+
+        // Theme Toggle Handler
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        themeToggle.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                themeIcon.className = 'fa-solid fa-moon text-lg';
+            } else {
+                document.documentElement.classList.add('dark');
+                themeIcon.className = 'fa-solid fa-sun text-lg';
+            }
+        });
+
+        // Proximity Slider Update
+        function updateDistance(val) {
+            currentVehicle.distance = parseInt(val);
+            document.getElementById('distanceDisplay').innerText = val + ' metri';
+            logConsole(`[GPS] Distanza aggiornata: ${val} metri dal veicolo ${currentVehicle.id}`);
+        }
+
+        // Vehicle Selection
+        function selectVehicle(id, name, type, battery, rate, distance) {
+            currentVehicle = { id, name, type, battery, rate, distance };
+            document.getElementById('vName').innerText = name;
+            document.getElementById('vID').innerText = id;
+            document.getElementById('vRate').innerText = `${rate.toFixed(2)} € / min`;
+            document.getElementById('distanceSlider').value = distance;
+            updateDistance(distance);
+            logConsole(`[SELECT] Veicolo ${id} (${name}) selezionato dall'utente.`);
+        }
+
+        // Logger Function
+        function logConsole(msg) {
+            const consoleEl = document.getElementById('iotConsole');
+            const entry = document.createElement('div');
+            entry.innerText = msg;
+            consoleEl.appendChild(entry);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        // Sblocco IoT Workflow (US-010 & US-011)
+        function startUnlockProcess() {
+            const unlockBtn = document.getElementById('unlockBtn');
+            const simError = document.getElementById('simHardwareError').checked;
+
+            // Rule 4 Check: Proximity <= 50m
+            if (currentVehicle.distance > 50) {
+                alert(`Errore Prossimità (US-010): Ti trovi a ${currentVehicle.distance}m dal veicolo. Avvicinati entro 50m per poter sbloccare.`);
+                logConsole(`[REJECT] Tentativo di sblocco fallito: distanza ${currentVehicle.distance}m > 50m`);
+                return;
+            }
+
+            // Step 1: Pre-authorization & UI Lock
+            unlockBtn.disabled = true;
+            unlockBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> PRE-AUTORIZZAZIONE € 5.00...`;
+            logConsole(`[PAYMENT] Pre-autorizzazione di 5.00 € richiesta al Gateway...`);
+
+            setTimeout(() => {
+                logConsole(`[PAYMENT] Pre-autorizzazione ok (Token pre-auth confermato).`);
+                unlockBtn.innerHTML = `<i class="fa-solid fa-tower-broadcast animate-bounce"></i> INVIO COMANDO MQTT SBLOCCO...`;
+                logConsole(`[IoT] Invio payload MQTT topic '/vehicles/${currentVehicle.id}/unlock'...`);
+
+                // Scenario US-011 (Hardware Simulation Timeout Error)
+                if (simError) {
+                    setTimeout(() => {
+                        logConsole(`[IoT] ...Nessun ACK ricevuto entro 8s. Retry 1/1...`);
+                        setTimeout(() => {
+                            logConsole(`[IoT ERROR] Timeout risposta centralina hardware (US-011).`);
+                            logConsole(`[PAYMENT] Storno pre-autorizzazione 5.00 € eseguito.`);
+                            logConsole(`[SYSTEM] Stato veicolo registrato come IN_MANUTENZIONE.`);
+                            
+                            alert(`Impossibile sbloccare il veicolo (${currentVehicle.id}): Centralina IoT non raggiungibile. La pre-autorizzazione è stata annullata e non ti è stato addebitato nulla.`);
+                            
+                            unlockBtn.disabled = false;
+                            unlockBtn.innerHTML = `<i class="fa-solid fa-lock-open"></i> SBLOCCA VEICOLO (US-010)`;
+                            document.getElementById('vehicleStatusBadge').innerText = "IN MANUTENZIONE";
+                            document.getElementById('vehicleStatusBadge').className = "px-2.5 py-1 text-xs font-bold rounded-full bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300";
+                        }, 2500);
+                    }, 3000);
+                } 
+                // Scenario US-010 (Happy Path Success)
+                else {
+                    setTimeout(() => {
+                        logConsole(`[IoT ACK] Risposta hardware 200 OK: Portiere sbloccate.`);
+                        logConsole(`[SYSTEM] Sessione noleggio creata con successo. Stato veicolo: IN_USO`);
+
+                        unlockBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> VEICOLO SBLOCCATO!`;
+                        unlockBtn.className = "w-full py-3.5 px-4 bg-emerald-800 text-white font-bold rounded-xl transition shadow-inner";
+                        
+                        document.getElementById('vehicleStatusBadge').innerText = "IN USO (NOLEGGIO ATTIVO)";
+                        document.getElementById('vehicleStatusBadge').className = "px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300";
+
+                        // Trigger Active Rental Timer
+                        document.getElementById('activeTripWidget').classList.remove('hidden');
+                        startTimer();
+                    }, 2000);
+                }
+            }, 1500);
+        }
+
+        // Active Rental Timer
+        function startTimer() {
+            secondsElapsed = 0;
+            tripInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+                const secs = String(secondsElapsed % 60).padStart(2, '0');
+                document.getElementById('tripTimer').innerText = `${mins}:${secs}`;
+                
+                // Calculate cost: base cost per min
+                const cost = ((secondsElapsed / 60) * currentVehicle.rate).toFixed(2);
+                document.getElementById('accumulatedCost').innerText = `${cost} €`;
+            }, 1000);
+        }
+
+        // End Trip
+        function endTrip() {
+            clearInterval(tripInterval);
+            const totalCost = document.getElementById('accumulatedCost').innerText;
+            alert(`Corsa completata con successo! Importo finale addebitato: ${totalCost}`);
+            location.reload();
+        }
+    </script>
+</body>
+</html>
